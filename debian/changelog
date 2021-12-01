@@ -1,0 +1,10 @@
+ros-noetic-mia-hand-description (1.0.0-1focal) focal; urgency=high
+
+  * Initial commit.
+  * Fix package xml files.
+  * Initial commit.
+  * Contributors: frcini
+
+ -- Andrea Burani <andreabu@prensilia.com>  Wed, 01 Dec 2021 00:00:00 -0000
+
+
