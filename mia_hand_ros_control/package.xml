@@ -17,6 +17,7 @@
 
   <license>BSD</license>
 
+  <url type="website">https://wiki.ros.org/mia_hand_ros_pkgs</url>
   <url type="repository">https://bitbucket.org/prensiliasrl/mia_hand_ros_pkgs.git</url>
 
 
@@ -39,7 +40,22 @@
   <build_depend>urdf</build_depend>
   <build_depend>control_toolbox</build_depend>
   <build_depend>joint_limits_interface</build_depend>
+  <build_depend>rqt_joint_trajectory_controller</build_depend>
+
   <build_export_depend>mia_hand_driver</build_export_depend>
+  <build_export_depend>mia_hand_description</build_export_depend>
+  <build_export_depend>hardware_interface</build_export_depend>
+  <build_export_depend>controller_manager</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>control_msgs</build_export_depend>
+  <build_export_depend>trajectory_msgs</build_export_depend>
+  <build_export_depend>actionlib</build_export_depend>
+  <build_export_depend>pluginlib</build_export_depend>
+  <build_export_depend>transmission_interface</build_export_depend>
+  <build_export_depend>urdf</build_export_depend>
+  <build_export_depend>control_toolbox</build_export_depend>
+  <build_export_depend>joint_limits_interface</build_export_depend>
+  <build_export_depend>rqt_joint_trajectory_controller</build_export_depend>
 
 
   <exec_depend>hardware_interface</exec_depend>
@@ -56,6 +72,7 @@
   <exec_depend>joint_limits_interface</exec_depend>
   <exec_depend>mia_hand_driver</exec_depend>
   <exec_depend>mia_hand_description</exec_depend>
+  <exec_depend>rqt_joint_trajectory_controller</exec_depend>
 
   <doc_depend>doxygen</doc_depend>
 
