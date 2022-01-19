@@ -14,7 +14,7 @@
 
   <license>BSD</license>
 
-
+  <url type="website">https://wiki.ros.org/mia_hand_ros_pkgs</url>
   <url type="repository">https://bitbucket.org/prensiliasrl/mia_hand_ros_pkgs.git</url>
 
 
