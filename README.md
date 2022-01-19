@@ -1,3 +1,34 @@
+## mia_hand_ros_pkgs (noetic) - 1.0.0-7
+
+The packages in the `mia_hand_ros_pkgs` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --rosdistro noetic --track noetic mia_hand_ros_pkgs` on `Wed, 19 Jan 2022 14:48:32 -0000`
+
+These packages were released:
+- `mia_hand_bringup`
+- `mia_hand_description`
+- `mia_hand_driver`
+- `mia_hand_gazebo`
+- `mia_hand_moveit_config`
+- `mia_hand_msgs`
+- `mia_hand_ros_control`
+- `mia_hand_ros_pkgs`
+
+Version of package(s) in repository `mia_hand_ros_pkgs`:
+
+- upstream repository: https://bitbucket.org/prensiliasrl/mia_hand_ros_pkgs.git
+- release repository: https://github.com/Prensilia-srl/mia_hand_ros_pkgs-release.git
+- rosdistro version: `1.0.0-1`
+- old version: `1.0.0-6`
+- new version: `1.0.0-7`
+
+Versions of tools used:
+
+- bloom version: `0.10.7`
+- catkin_pkg version: `0.4.24`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## mia_hand_ros_pkgs (noetic) - 1.0.0-6
 
 The packages in the `mia_hand_ros_pkgs` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --rosdistro noetic --track noetic mia_hand_ros_pkgs` on `Wed, 19 Jan 2022 14:24:46 -0000`
