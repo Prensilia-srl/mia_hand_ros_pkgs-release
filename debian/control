@@ -1,0 +1,12 @@
+Source: ros-noetic-mia-hand-gazebo
+Section: misc
+Priority: optional
+Maintainer: Andrea Burani <andreabu@prensilia.com>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-angles, ros-noetic-catkin, ros-noetic-control-toolbox, ros-noetic-controller-manager, ros-noetic-gazebo-ros-control, ros-noetic-hardware-interface, ros-noetic-joint-limits-interface, ros-noetic-mia-hand-description, ros-noetic-mia-hand-ros-control, ros-noetic-pluginlib, ros-noetic-roscpp, ros-noetic-std-msgs, ros-noetic-transmission-interface, ros-noetic-urdf
+Homepage: https://wiki.ros.org/mia_hand_ros_pkgs
+Standards-Version: 3.9.2
+
+Package: ros-noetic-mia-hand-gazebo
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-angles, ros-noetic-control-toolbox, ros-noetic-controller-manager, ros-noetic-gazebo-ros-control, ros-noetic-hardware-interface, ros-noetic-joint-limits-interface, ros-noetic-mia-hand-description, ros-noetic-mia-hand-ros-control, ros-noetic-pluginlib, ros-noetic-roscpp, ros-noetic-std-msgs, ros-noetic-transmission-interface, ros-noetic-urdf
+Description: Package for simulating Mia Hand in Gazebo, interfacing simulation with ROS Control.
