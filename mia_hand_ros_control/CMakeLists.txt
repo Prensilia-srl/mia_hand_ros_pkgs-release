@@ -22,6 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
   urdf
   control_toolbox
   joint_limits_interface
+  rqt_joint_trajectory_controller
   )
 
 
@@ -50,6 +51,7 @@ catkin_package(
     urdf
     control_toolbox
     joint_limits_interface
+    rqt_joint_trajectory_controller
 )
 
 
@@ -80,12 +82,6 @@ add_dependencies(Mia_hw_node ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(Mia_hw_node ${PROJECT_NAME})
 
-
-add_executable(test_node src/test_node.cpp)
-
-add_dependencies(test_node ${catkin_EXPORTED_TARGETS})
-
-target_link_libraries(test_node ${PROJECT_NAME})
 
 
 
