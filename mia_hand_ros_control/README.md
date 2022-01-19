@@ -30,6 +30,8 @@ To do that one of the following pre-tested commands can be used:
           tc_type:                default="vel"          doc="type of trajectory controller to launch. Values: vel, pos"
           robotNamespace          default="mia_hand_hw"  doc="Namespace of the robot"
 
+      NB: to use this command it may be needed to manually install the ros pkg rqt_joint_trajectory_controller.
+
   - to launch the control loop (frequency 100Hz) with a traj controller (velocity traj controller as default) and the RVIZ Moveit GUI, attaching the Mia hand at COM 0 (default):
 
         roslaunch mia_hand_bringup mia_hand_hw_moveit.launch
@@ -46,3 +48,4 @@ To do that one of the following pre-tested commands can be used:
       For the index two different links will be displayed (if the option to visualize the moveit goal position is selected): one index link displays the signed
       target position (for exaple index in position -1.2 rad), the other index link displays the actual configuration of the index ( so after having reached the target
       position of -1.2 rad this index link will be at pos 1.2 rad flexed and the thumb will be adducted).
+      Please be sure to select the context OMPL to move the Mia hand fingers (the other contexts have not been tested).

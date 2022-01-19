@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(mia_hand_description)
 
-find_package(catkin REQUIRED COMPONENTS roscpp urdf std_msgs genmsg sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp urdf std_msgs genmsg sensor_msgs joint_limits_interface)
 
 
 ###################################
@@ -13,6 +13,9 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     urdf
+    sensor_msgs
+    std_msgs
+    joint_limits_interface
 
   INCLUDE_DIRS
     include
