@@ -1,0 +1,12 @@
+Source: ros-noetic-mia-hand-driver
+Section: misc
+Priority: optional
+Maintainer: Andrea Burani <andreabu@prensilia.com>
+Build-Depends: debhelper (>= 9.0.0), libserial-dev, ros-noetic-catkin, ros-noetic-mia-hand-msgs, ros-noetic-roscpp, ros-noetic-std-srvs
+Homepage: https://wiki.ros.org/mia_hand_ros_pkgs
+Standards-Version: 3.9.2
+
+Package: ros-noetic-mia-hand-driver
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libserial-dev, ros-noetic-mia-hand-msgs, ros-noetic-roscpp, ros-noetic-std-srvs
+Description: Package containing code for driving Mia Hand.
