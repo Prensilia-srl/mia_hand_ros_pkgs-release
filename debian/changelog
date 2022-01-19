@@ -1,0 +1,10 @@
+ros-noetic-mia-hand-ros-pkgs (1.0.0-10focal) focal; urgency=high
+
+  * Initial commit.
+  * Fix package xml files.
+  * Initial commit.
+  * Contributors: frcini
+
+ -- Andrea Burani <andreabu@prensilia.com>  Tue, 30 Nov 2021 23:00:00 -0000
+
+
