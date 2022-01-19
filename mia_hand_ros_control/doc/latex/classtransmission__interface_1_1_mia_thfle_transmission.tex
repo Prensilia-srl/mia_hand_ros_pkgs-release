@@ -1,0 +1,351 @@
+\hypertarget{classtransmission__interface_1_1_mia_thfle_transmission}{}\doxysection{transmission\+\_\+interface\+::Mia\+Thfle\+Transmission Class Reference}
+\label{classtransmission__interface_1_1_mia_thfle_transmission}\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+
+
+Implementation of the linear Mia thumb flexion transmission mapping the positions and velocity from the joint sapce to ros actuator-\/space (i.\+e.  
+
+
+
+
+{\ttfamily \#include $<$mia\+\_\+thfle\+\_\+transmission.\+h$>$}
+
+
+
+Inheritance diagram for transmission\+\_\+interface\+::Mia\+Thfle\+Transmission\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=210pt]{classtransmission__interface_1_1_mia_thfle_transmission__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for transmission\+\_\+interface\+::Mia\+Thfle\+Transmission\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=210pt]{classtransmission__interface_1_1_mia_thfle_transmission__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a49ff9675275aad6bc08108faee6bcfa0}{Mia\+Thfle\+Transmission}} ()
+\begin{DoxyCompactList}\small\item\em Class constructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a39488cee2a4c07fc0c6f7ecc5eca1ff4}{actuator\+To\+Joint\+Effort}} (const transmission\+\_\+interface\+::\+Actuator\+Data \&act\+\_\+data, transmission\+\_\+interface\+::\+Joint\+Data \&jnt\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Do not use this methos since Mia hand has not effort control. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_af93b34ae671666b1a6aaa52641bfd5d0}{actuator\+To\+Joint\+Velocity}} (const transmission\+\_\+interface\+::\+Actuator\+Data \&act\+\_\+data, transmission\+\_\+interface\+::\+Joint\+Data \&jnt\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Transform velocity variables from actuator to joint space. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_ac9d23d212306287376f5abcad8a4a63e}{actuator\+To\+Joint\+Position}} (const transmission\+\_\+interface\+::\+Actuator\+Data \&act\+\_\+data, transmission\+\_\+interface\+::\+Joint\+Data \&jnt\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Transform position variables from actuator to joint space. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a9ffd4c2742cd9d8d578eef617f3829d6}{joint\+To\+Actuator\+Effort}} (const transmission\+\_\+interface\+::\+Joint\+Data \&jnt\+\_\+data, transmission\+\_\+interface\+::\+Actuator\+Data \&act\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Do not use this methos since Mia hand has not effort control. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a923e787fbd89c450098306158b717a33}{joint\+To\+Actuator\+Velocity}} (const transmission\+\_\+interface\+::\+Joint\+Data \&jnt\+\_\+data, transmission\+\_\+interface\+::\+Actuator\+Data \&act\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Transform velocity variables from joint to actuator space. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a8e5d2d507bf446982b0f59669bb6450c}{joint\+To\+Actuator\+Position}} (const transmission\+\_\+interface\+::\+Joint\+Data \&jnt\+\_\+data, transmission\+\_\+interface\+::\+Actuator\+Data \&act\+\_\+data)
+\begin{DoxyCompactList}\small\item\em Transform position variables from joint to actuator space. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a3a801a3c8d16e49bcef3b3512975e884}{h\+\_\+thfle}} (const double pos)
+\begin{DoxyCompactList}\small\item\em Thumb flexion transmission first step function for pose\+: mu = mu = h\+\_\+thfle(pos). \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a52f451df4946f6288ae4e1178cc1e558}{h\+\_\+thfle\+\_\+inv}} (const double mu)
+\begin{DoxyCompactList}\small\item\em Thumb flexion transmission first step inverse function for pose\+: pos = h\+\_\+thfle\+\_\+inv(mu). \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a9eed7344d42deb7ba7161fde1d85cc87}{dh}} (const double spe)
+\begin{DoxyCompactList}\small\item\em Thumb flexion transmission first step function for velocity\+: omega\+\_\+m = dh(spe) \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a1ffff033ced3dccbc0d9f8841f5f8fe5}{dh\+\_\+inv}} (const double omega\+\_\+m)
+\begin{DoxyCompactList}\small\item\em Thumb flexion transmission first step inverse function for velocity\+: spe = dh\+\_\+inv(omega\+\_\+m). \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_ab826d396d2d15965057cd633a55aa23f}{get\+Actuator\+Reduction}} () const
+\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a00c0901ee6094790bbca3296a96348d9}{get\+Joint\+Offset}} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a1ae3144141778335712b5125c5c1a398}{reduction\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Linear second step reduction of the tranmission. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classtransmission__interface_1_1_mia_thfle_transmission_a15072254d621d7ccc903e789b3208c49}{jnt\+\_\+offset\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Offset of teh joint. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of the linear Mia thumb flexion transmission mapping the positions and velocity from the joint sapce to ros actuator-\/space (i.\+e. 
+
+as returned by Mia hand \mbox{[}-\/255; +255\mbox{]} and \mbox{[}-\/90;+90\mbox{]}) and vice-\/versa. 
+
+Definition at line 60 of file mia\+\_\+thfle\+\_\+transmission.\+h.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a49ff9675275aad6bc08108faee6bcfa0}\label{classtransmission__interface_1_1_mia_thfle_transmission_a49ff9675275aad6bc08108faee6bcfa0}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!MiaThfleTransmission@{MiaThfleTransmission}}
+\index{MiaThfleTransmission@{MiaThfleTransmission}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{MiaThfleTransmission()}{MiaThfleTransmission()}}
+{\footnotesize\ttfamily transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::\+Mia\+Thfle\+Transmission (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Class constructor. 
+
+
+
+Definition at line 22 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a39488cee2a4c07fc0c6f7ecc5eca1ff4}\label{classtransmission__interface_1_1_mia_thfle_transmission_a39488cee2a4c07fc0c6f7ecc5eca1ff4}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!actuatorToJointEffort@{actuatorToJointEffort}}
+\index{actuatorToJointEffort@{actuatorToJointEffort}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{actuatorToJointEffort()}{actuatorToJointEffort()}}
+{\footnotesize\ttfamily void transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::actuator\+To\+Joint\+Effort (\begin{DoxyParamCaption}\item[{const transmission\+\_\+interface\+::\+Actuator\+Data \&}]{act\+\_\+data,  }\item[{transmission\+\_\+interface\+::\+Joint\+Data \&}]{jnt\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Do not use this methos since Mia hand has not effort control. 
+
+
+
+Definition at line 131 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_ac9d23d212306287376f5abcad8a4a63e}\label{classtransmission__interface_1_1_mia_thfle_transmission_ac9d23d212306287376f5abcad8a4a63e}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!actuatorToJointPosition@{actuatorToJointPosition}}
+\index{actuatorToJointPosition@{actuatorToJointPosition}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{actuatorToJointPosition()}{actuatorToJointPosition()}}
+{\footnotesize\ttfamily void transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::actuator\+To\+Joint\+Position (\begin{DoxyParamCaption}\item[{const transmission\+\_\+interface\+::\+Actuator\+Data \&}]{act\+\_\+data,  }\item[{transmission\+\_\+interface\+::\+Joint\+Data \&}]{jnt\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Transform position variables from actuator to joint space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em act\+\_\+data} & thumb\+\_\+fle actuator actual state. \\
+\hline
+{\em jnt\+\_\+data} & returned thumb\+\_\+fle joint state. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 94 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_af93b34ae671666b1a6aaa52641bfd5d0}\label{classtransmission__interface_1_1_mia_thfle_transmission_af93b34ae671666b1a6aaa52641bfd5d0}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!actuatorToJointVelocity@{actuatorToJointVelocity}}
+\index{actuatorToJointVelocity@{actuatorToJointVelocity}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{actuatorToJointVelocity()}{actuatorToJointVelocity()}}
+{\footnotesize\ttfamily void transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::actuator\+To\+Joint\+Velocity (\begin{DoxyParamCaption}\item[{const transmission\+\_\+interface\+::\+Actuator\+Data \&}]{act\+\_\+data,  }\item[{transmission\+\_\+interface\+::\+Joint\+Data \&}]{jnt\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Transform velocity variables from actuator to joint space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em act\+\_\+data} & thumb\+\_\+fle actuator actual state. \\
+\hline
+{\em jnt\+\_\+data} & returned thumb\+\_\+fle joint state. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 83 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a9eed7344d42deb7ba7161fde1d85cc87}\label{classtransmission__interface_1_1_mia_thfle_transmission_a9eed7344d42deb7ba7161fde1d85cc87}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!dh@{dh}}
+\index{dh@{dh}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{dh()}{dh()}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::dh (\begin{DoxyParamCaption}\item[{const double}]{spe }\end{DoxyParamCaption})}
+
+
+
+Thumb flexion transmission first step function for velocity\+: omega\+\_\+m = dh(spe) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em spe} & round velocity in the ros actuator-\/space (i.\+e. as returned by Mia hand \mbox{[}-\/90; +90\mbox{]}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+omega\+\_\+m velocity in the mia actuator space. 
+\end{DoxyReturn}
+
+
+Definition at line 59 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a1ffff033ced3dccbc0d9f8841f5f8fe5}\label{classtransmission__interface_1_1_mia_thfle_transmission_a1ffff033ced3dccbc0d9f8841f5f8fe5}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!dh\_inv@{dh\_inv}}
+\index{dh\_inv@{dh\_inv}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{dh\_inv()}{dh\_inv()}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::dh\+\_\+inv (\begin{DoxyParamCaption}\item[{const double}]{omega\+\_\+m }\end{DoxyParamCaption})}
+
+
+
+Thumb flexion transmission first step inverse function for velocity\+: spe = dh\+\_\+inv(omega\+\_\+m). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em omega\+\_\+m} & velocity in the mia actuator space. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+spe\+: round velocity in the ros actuator-\/space (i.\+e. as returned by Mia hand \mbox{[}-\/90; +90\mbox{]}). 
+\end{DoxyReturn}
+
+
+Definition at line 68 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_ab826d396d2d15965057cd633a55aa23f}\label{classtransmission__interface_1_1_mia_thfle_transmission_ab826d396d2d15965057cd633a55aa23f}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!getActuatorReduction@{getActuatorReduction}}
+\index{getActuatorReduction@{getActuatorReduction}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{getActuatorReduction()}{getActuatorReduction()}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::get\+Actuator\+Reduction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 156 of file mia\+\_\+thfle\+\_\+transmission.\+h.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a00c0901ee6094790bbca3296a96348d9}\label{classtransmission__interface_1_1_mia_thfle_transmission_a00c0901ee6094790bbca3296a96348d9}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!getJointOffset@{getJointOffset}}
+\index{getJointOffset@{getJointOffset}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{getJointOffset()}{getJointOffset()}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::get\+Joint\+Offset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 157 of file mia\+\_\+thfle\+\_\+transmission.\+h.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a3a801a3c8d16e49bcef3b3512975e884}\label{classtransmission__interface_1_1_mia_thfle_transmission_a3a801a3c8d16e49bcef3b3512975e884}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!h\_thfle@{h\_thfle}}
+\index{h\_thfle@{h\_thfle}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{h\_thfle()}{h\_thfle()}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::h\+\_\+thfle (\begin{DoxyParamCaption}\item[{const double}]{pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Thumb flexion transmission first step function for pose\+: mu = mu = h\+\_\+thfle(pos). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & pose in the ros actuator-\/space (i.\+e. as returned by Mia hand \mbox{[}-\/255; +255\mbox{]}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mu\+: pose in the mia actuator space. 
+\end{DoxyReturn}
+
+
+Definition at line 41 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a52f451df4946f6288ae4e1178cc1e558}\label{classtransmission__interface_1_1_mia_thfle_transmission_a52f451df4946f6288ae4e1178cc1e558}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!h\_thfle\_inv@{h\_thfle\_inv}}
+\index{h\_thfle\_inv@{h\_thfle\_inv}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{h\_thfle\_inv()}{h\_thfle\_inv()}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::h\+\_\+thfle\+\_\+inv (\begin{DoxyParamCaption}\item[{const double}]{mu }\end{DoxyParamCaption})}
+
+
+
+Thumb flexion transmission first step inverse function for pose\+: pos = h\+\_\+thfle\+\_\+inv(mu). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mu} & pose in the mia actuator space. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pos\+: round pose in the ros actuator-\/space (i.\+e. as returned by Mia hand \mbox{[}-\/255; +255\mbox{]}). 
+\end{DoxyReturn}
+
+
+Definition at line 50 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a9ffd4c2742cd9d8d578eef617f3829d6}\label{classtransmission__interface_1_1_mia_thfle_transmission_a9ffd4c2742cd9d8d578eef617f3829d6}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!jointToActuatorEffort@{jointToActuatorEffort}}
+\index{jointToActuatorEffort@{jointToActuatorEffort}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{jointToActuatorEffort()}{jointToActuatorEffort()}}
+{\footnotesize\ttfamily void transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::joint\+To\+Actuator\+Effort (\begin{DoxyParamCaption}\item[{const transmission\+\_\+interface\+::\+Joint\+Data \&}]{jnt\+\_\+data,  }\item[{transmission\+\_\+interface\+::\+Actuator\+Data \&}]{act\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Do not use this methos since Mia hand has not effort control. 
+
+
+
+Definition at line 138 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a8e5d2d507bf446982b0f59669bb6450c}\label{classtransmission__interface_1_1_mia_thfle_transmission_a8e5d2d507bf446982b0f59669bb6450c}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!jointToActuatorPosition@{jointToActuatorPosition}}
+\index{jointToActuatorPosition@{jointToActuatorPosition}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{jointToActuatorPosition()}{jointToActuatorPosition()}}
+{\footnotesize\ttfamily void transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::joint\+To\+Actuator\+Position (\begin{DoxyParamCaption}\item[{const transmission\+\_\+interface\+::\+Joint\+Data \&}]{jnt\+\_\+data,  }\item[{transmission\+\_\+interface\+::\+Actuator\+Data \&}]{act\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Transform position variables from joint to actuator space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em jnt\+\_\+data} & mrl joint target. \\
+\hline
+{\em act\+\_\+data} & returned mrl actuator target. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 116 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a923e787fbd89c450098306158b717a33}\label{classtransmission__interface_1_1_mia_thfle_transmission_a923e787fbd89c450098306158b717a33}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!jointToActuatorVelocity@{jointToActuatorVelocity}}
+\index{jointToActuatorVelocity@{jointToActuatorVelocity}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{jointToActuatorVelocity()}{jointToActuatorVelocity()}}
+{\footnotesize\ttfamily void transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::joint\+To\+Actuator\+Velocity (\begin{DoxyParamCaption}\item[{const transmission\+\_\+interface\+::\+Joint\+Data \&}]{jnt\+\_\+data,  }\item[{transmission\+\_\+interface\+::\+Actuator\+Data \&}]{act\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+Transform velocity variables from joint to actuator space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em jnt\+\_\+data} & mrl joint target. \\
+\hline
+{\em act\+\_\+data} & returned mrl actuator target. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 105 of file mia\+\_\+thfle\+\_\+transmission.\+cpp.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a15072254d621d7ccc903e789b3208c49}\label{classtransmission__interface_1_1_mia_thfle_transmission_a15072254d621d7ccc903e789b3208c49}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!jnt\_offset\_@{jnt\_offset\_}}
+\index{jnt\_offset\_@{jnt\_offset\_}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{jnt\_offset\_}{jnt\_offset\_}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::jnt\+\_\+offset\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Offset of teh joint. 
+
+
+
+Definition at line 161 of file mia\+\_\+thfle\+\_\+transmission.\+h.
+
+\mbox{\Hypertarget{classtransmission__interface_1_1_mia_thfle_transmission_a1ae3144141778335712b5125c5c1a398}\label{classtransmission__interface_1_1_mia_thfle_transmission_a1ae3144141778335712b5125c5c1a398}} 
+\index{transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}!reduction\_@{reduction\_}}
+\index{reduction\_@{reduction\_}!transmission\_interface::MiaThfleTransmission@{transmission\_interface::MiaThfleTransmission}}
+\doxysubsubsection{\texorpdfstring{reduction\_}{reduction\_}}
+{\footnotesize\ttfamily double transmission\+\_\+interface\+::\+Mia\+Thfle\+Transmission\+::reduction\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Linear second step reduction of the tranmission. 
+
+
+
+Definition at line 160 of file mia\+\_\+thfle\+\_\+transmission.\+h.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+mia\+\_\+hand\+\_\+ros\+\_\+control/include/mia\+\_\+hand\+\_\+ros\+\_\+control/\mbox{\hyperlink{mia__thfle__transmission_8h}{mia\+\_\+thfle\+\_\+transmission.\+h}}\item 
+mia\+\_\+hand\+\_\+ros\+\_\+control/src/\mbox{\hyperlink{mia__thfle__transmission_8cpp}{mia\+\_\+thfle\+\_\+transmission.\+cpp}}\end{DoxyCompactItemize}
