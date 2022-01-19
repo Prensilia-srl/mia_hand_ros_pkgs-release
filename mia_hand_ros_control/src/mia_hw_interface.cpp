@@ -1,0 +1,683 @@
+/*********************************************************************************************************
+ Modifyed by Author: Prensilia srl
+ Desc:   Hardware interface of the MIA hand
+
+ version 1.0
+
+**********************************************************************************************************/
+
+#include <iostream>
+#include "mia_hand_ros_control/mia_hw_interface.h"
+
+using hardware_interface::JointStateHandle;
+using hardware_interface::JointHandle;
+using transmission_interface::JointToActuatorPositionHandle;
+using transmission_interface::JointToActuatorVelocityHandle;
+using transmission_interface::ActuatorToJointStateHandle;
+
+namespace mia_hand
+{
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //Class constructor: Initialize com and Urdf name getting ros parameters
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  MiaHWInterface::MiaHWInterface()
+  {
+  	robot_description_ = "robot_description"; // default
+  	n_dof_sim_ = 6; 			   // as declared in the URDF
+  	write_counter = 0;
+  	read_counter = 0; 			   // to delete
+  	n_actuators_ = 3;
+
+  	//Get Server IP address
+  	if (ros::param::has("~Mia_COM_"))
+  	{
+  		ros::param::get("~Mia_COM_", COM_number_);
+  	}
+  	else
+  	{
+  		COM_number_ = 1; // default value
+  		ros::param::set("~Mia_COM_", 1);
+
+  	}
+
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //Class distructor: Stop Mia data stream and disconnect mia hardware
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  MiaHWInterface:: ~MiaHWInterface()
+  {
+  	// Disable Mia streaming
+  	mia_.switchPosStream(false);
+  	mia_.switchSpeStream(false);
+
+  	mia_.disconnect();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //init: Initialize class and hardware
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  bool MiaHWInterface::init(ros::NodeHandle &root_nh, ros::NodeHandle &mia_hw_nh)
+  {
+  	nh_ = mia_hw_nh;
+  	ROS_INFO_NAMED("MiaHWInterface","Initialization of MiaHWInterface" );
+
+  	// Initialize passive joint thumb_opp + Index_fle
+    		const bool load = false;
+        	MyTh_opp_passiveJoint.init(load); // initialize without loading now URDF
+
+
+  	// connect Mia hand
+
+  	bool port_opened = mia_.connectToPort(COM_number_);
+
+  	if (port_opened)
+  	{
+  		std::string info_msg = "/dev/ttyUSB successfully opened.";
+  		info_msg.insert(11, std::to_string(COM_number_));
+  		ROS_INFO_NAMED("MiaHWInterface", "%s\n", info_msg.c_str());
+  	}
+  	else
+  	{
+  		std::string info_msg = "/dev/ttyUSB can not be open.";
+  		info_msg.insert(11, std::to_string(COM_number_));
+  		ROS_ERROR_NAMED("MiaHWInterface", "%s\n", info_msg.c_str());
+  		return false;
+  	}
+
+
+  	if(!ros::isInitialized())
+		{
+ 			ROS_FATAL_STREAM_NAMED("MiaHWInterface","Ros has not been initialized");
+  		return false;
+		 }
+
+  	// Get Transmission number declared in the URDF to know which joint are actuated
+  	const std::string urdf_string = getURDF(robot_description_);
+
+
+
+  	if (!parseTransmissionsFromURDF(urdf_string))
+  	{
+  		ROS_ERROR_NAMED("MiaHWInterface", "Error parsing URDF in MiaHWInterface, MiaHWInterface not active.\n");
+  		return false;
+  	}
+
+  	// get URDF model
+  	urdf::Model urdf_model;
+  	const urdf::Model *const urdf_model_ptr = urdf_model.initString(urdf_string) ? &urdf_model : NULL;
+
+
+  	// getJointLimits() searches joint_limit_nh for joint limit parameters. The format of each
+  	// parameter's name is "joint_limits/<joint name>". An example is "joint_limits/axle_joint".
+  	const ros::NodeHandle joint_limit_nh(nh_);
+
+
+
+  	// Resize variables
+  	joint_names_.resize(n_dof_sim_);
+        	joint_types_.resize(n_dof_sim_);
+  	joint_lower_limits_.resize(n_dof_sim_);
+  	joint_upper_limits_.resize(n_dof_sim_);
+  	joint_effort_limits_.resize(n_dof_sim_);
+
+  	joint_position_state_.resize(n_dof_sim_);
+  	joint_velocity_state_.resize(n_dof_sim_);
+  	joint_effort_state_.resize(n_dof_sim_);
+
+  	joint_effort_command_.resize(n_dof_sim_);
+  	joint_position_command_.resize(n_dof_sim_);
+  	joint_velocity_command_.resize(n_dof_sim_);
+
+  	act_position_state_.resize(n_dof_sim_);
+  	act_velocity_state_.resize(n_dof_sim_);
+  	act_effort_state_.resize(n_dof_sim_);
+
+  	act_position_command_.resize(n_dof_sim_);
+  	act_velocity_command_.resize(n_dof_sim_);
+  	act_effort_command_.resize(n_dof_sim_);
+
+  	MiaTrasmissions.resize(n_dof_sim_);
+  	trasmission_names_.resize(n_dof_sim_);
+
+  	joint_control_methods_.resize(n_dof_sim_);
+  	last_joint_position_command_.resize(n_dof_sim_);
+  	last_joint_velocity_command_.resize(n_dof_sim_);
+  	last_joint_control_methods_.resize(n_dof_sim_);
+  	List_joint_control_methods_.resize(n_dof_sim_);
+
+  	// TO DELETE
+  	old_act_position_state_.resize(n_dof_sim_);
+
+  	// scan the joints in the URDF and find the Mia joints and register them
+
+  	int URDF_n_dof_sim_ = URDFtransmissions_.size();
+
+
+
+  	for(unsigned int j=0; j < URDF_n_dof_sim_; j++)
+  	{
+  	// Check that this transmission has one joint
+  	if(URDFtransmissions_[j].joints_.size() == 0)
+  	{
+  		ROS_WARN_STREAM_NAMED("MiaHWInterface","URDFTransmission " << URDFtransmissions_[j].name_
+  		  << " has no associated joints.");
+  		continue;
+  	}
+
+  	std::vector<std::string> joint_interfaces = URDFtransmissions_[j].joints_[0].hardware_interfaces_;
+
+		if (joint_interfaces.empty() &&
+		!(URDFtransmissions_[j].actuators_.empty()) &&
+		!(URDFtransmissions_[j].actuators_[0].hardware_interfaces_.empty())) // Deprecate HW interface specification in actuators in ROS J
+		{
+			joint_interfaces = URDFtransmissions_[j].actuators_[0].hardware_interfaces_;
+		}
+
+		if (joint_interfaces.empty())
+		{
+			 ROS_WARN_STREAM_NAMED("MiaHWInterface", "Joint " << URDFtransmissions_[j].joints_[0].name_ <<
+			" of URDFtransmission " << URDFtransmissions_[j].name_ << " does not specify any hardware interface. " <<
+			"Not adding it to the robot hardware simulation.");
+			continue;
+		}
+
+		const std::string temp_joint_name = URDFtransmissions_[j].joints_[0].name_;
+
+
+		// Add data from URDFtransmission and save the position of eac joints
+		int k ;
+
+		if (temp_joint_name == "j_thumb_fle" )
+		{
+			k = 0;
+			joints_ii.j_thumb_flex = k;
+			MiaTrasmissions[k] = &ThfleTrans;
+			trasmission_names_[k] = "MiaThumbTrans";
+		}
+		else if (temp_joint_name == "j_index_fle" )
+		{
+			k = 2;
+			joints_ii.j_index_flex = k;
+			MiaTrasmissions[k] = &IndexTrans;
+			trasmission_names_[k] = "MiaIndexTrans";
+
+		}
+		else if (temp_joint_name == "j_mrl_fle" )
+		{
+			k = 1;
+			joints_ii.j_mrl_flex = k;
+			MiaTrasmissions[k] = &MrlTrans;
+			trasmission_names_[k] = "MiaMrlTrans";
+		}
+		else if (temp_joint_name == "j_ring_fle" )
+		{
+			k = 3;
+			joints_ii.j_mrl_2 = k;
+		}
+		else if (temp_joint_name == "j_little_fle" )
+		{
+			k= 4;
+			joints_ii.j_mrl_3 = k;
+		}
+		else if (temp_joint_name == "j_thumb_opp" )
+		{
+			k = 5;
+			joints_ii.j_thumb_opp = k;
+		}
+		else
+		{
+			continue; // ignore joints that are not of the MIA Hand
+		}
+
+
+		// Initialize vector where to store state commands and actuartor data
+		joint_names_[k] = URDFtransmissions_[j].joints_[0].name_;
+		joint_position_state_[k] = 0;
+		joint_velocity_state_[k] = 0.0;
+		joint_effort_state_[k] = 1.0;  // N/m for continuous joints
+
+		joint_position_command_[k] = 0.0;
+		joint_velocity_command_[k] = 0.0;
+		joint_effort_command_[k] = 0.0;
+
+
+		act_position_state_[k] = 0.0;
+		act_velocity_state_[k] = 0.0;
+		act_effort_state_[k] = 0.0;
+
+		act_position_command_ [k] = 0.0;
+		act_velocity_command_ [k] = 0.0;
+		act_effort_command_ [k] = 0.0;
+
+		List_joint_control_methods_[k].resize(2);
+
+
+		// Register Joint State interface for the joint
+		js_interface_.registerHandle(hardware_interface::JointStateHandle(
+              	joint_names_[k], &joint_position_state_[k], &joint_velocity_state_[k], &joint_effort_state_[k]));
+
+		// Register Joint Position and Joint Velocity interface for the joint
+		std::vector< hardware_interface::JointHandle> joint_handle;
+		joint_handle.resize(2);
+
+		joint_control_methods_[k] = POSITION;
+		List_joint_control_methods_[k][0] = POSITION;
+		joint_handle[0] = hardware_interface::JointHandle(js_interface_.getHandle(joint_names_[k]),
+                                                        		    &joint_position_command_[k]);
+
+
+		pj_interface_.registerHandle(joint_handle[0]);
+
+		List_joint_control_methods_[k][1] = VELOCITY;
+		joint_handle[1] = hardware_interface::JointHandle(js_interface_.getHandle(joint_names_[k]),
+                                                        		   &joint_velocity_command_[k]);
+    vj_interface_.registerHandle(joint_handle[1]);
+
+
+  	// Get joint Limits
+		registerJointLimits(joint_names_[k], joint_handle, List_joint_control_methods_[k],
+                 		    joint_limit_nh, urdf_model_ptr,
+                 		    &joint_types_[k], &joint_lower_limits_[k], &joint_upper_limits_[k],
+                 		    &joint_effort_limits_[k]);
+
+
+
+
+		// Initialize trasmission varibales for 3 joints: thumb (k=0) index (k=1)  and mrl flex (k=2)
+		if( k >= 0 && k <= 2)
+		{
+			// Wrap state raw data
+			a_state_data[k].position.push_back(&act_position_state_[k]);
+			a_state_data[k].velocity.push_back(&act_velocity_state_[k]);
+			a_state_data[k].effort.push_back(&act_effort_state_[k]);
+
+			j_state_data[k].position.push_back(&joint_position_state_[k]);
+			j_state_data[k].velocity.push_back(&joint_velocity_state_[k]);
+			j_state_data[k].effort.push_back(&joint_effort_state_[k]);
+
+			// Wrap command data
+			a_cmd_data[k].position.push_back(&act_position_command_[k]);
+			a_cmd_data[k].velocity.push_back(&act_velocity_command_[k]);
+
+			j_cmd_data[k].position.push_back(&joint_position_command_[k]);
+			j_cmd_data[k].velocity.push_back(&joint_velocity_command_[k]);
+
+			// Register transmissions to each interface
+			if( k == joints_ii.j_index_flex ) // IndexTrans
+			{
+				index_act_to_jnt_pos_state.registerHandle(transmission_interface::MiaActuatorToJointPositionHandle(trasmission_names_[k], &IndexTrans, a_state_data[k], j_state_data[k]));
+				index_act_to_jnt_vel_state.registerHandle(transmission_interface::MiaActuatorToJointVelocityHandle(trasmission_names_[k], &IndexTrans, a_state_data[k], j_state_data[k]));
+
+				index_jnt_to_act_pos.registerHandle(transmission_interface::MiaJointToActuatorPositionHandle(trasmission_names_[k], &IndexTrans, a_cmd_data[k], j_cmd_data[k], a_state_data[k]));
+				index_jnt_to_act_vel.registerHandle(transmission_interface::MiaJointToActuatorVelocityHandle(trasmission_names_[k], &IndexTrans, a_cmd_data[k], j_cmd_data[k], a_state_data[k]));
+			}
+			else
+			{
+				act_to_jnt_pos_state.registerHandle(transmission_interface::ActuatorToJointPositionHandle(trasmission_names_[k], MiaTrasmissions[k], a_state_data[k], j_state_data[k]));
+				act_to_jnt_vel_state.registerHandle(transmission_interface::ActuatorToJointVelocityHandle(trasmission_names_[k], MiaTrasmissions[k], a_state_data[k], j_state_data[k]));
+
+				jnt_to_act_pos.registerHandle(transmission_interface::JointToActuatorPositionHandle(trasmission_names_[k], MiaTrasmissions[k], a_cmd_data[k], j_cmd_data[k]));
+				jnt_to_act_vel.registerHandle(transmission_interface::JointToActuatorVelocityHandle(trasmission_names_[k], MiaTrasmissions[k], a_cmd_data[k], j_cmd_data[k]));
+			}
+			// ROS_WARN_STREAM_NAMED("MiaHWInterface", "k " << k <<", Name" << joint_names_[k] <<", trasm" << trasmission_names_[k] );
+
+
+		}
+
+	}
+
+	// Update the passive joints limit
+	MyTh_opp_passiveJoint.ThMinPos = joint_lower_limits_[joints_ii.j_thumb_opp] ;
+  MyTh_opp_passiveJoint.ThMaxPos = joint_upper_limits_[joints_ii.j_thumb_opp] ;
+
+	// Register interfaces
+	registerInterface(&js_interface_);
+	registerInterface(&ej_interface_);
+	registerInterface(&pj_interface_);
+	registerInterface(&vj_interface_);
+
+	// Enable Mia streaming
+	mia_.switchPosStream(true);
+	mia_.switchSpeStream(true);
+
+	return true;
+  }
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //read: Read actuator state from hardware and propagate to joint spce
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  void MiaHWInterface::read(const ros::Time& time, const ros::Duration& duration)
+  {
+  	// Get from Mia hand
+  	for (uint8_t jnt = 0; jnt < n_actuators_; jnt++)
+  	{
+  		act_position_state_[jnt] = (double)mia_.getMotorPos(jnt);
+  		act_velocity_state_[jnt] = (double)mia_.getMotorSpe(jnt);
+
+  		if (read_counter== 0 )
+  		{
+  			old_act_position_state_[jnt] = act_position_state_[jnt] ;
+  			read_counter ++ ;
+  		}
+  		else
+  		{
+  			if (act_position_state_[jnt] < old_act_position_state_[jnt] )
+  				 act_velocity_state_[jnt] = - act_velocity_state_[jnt];
+  			old_act_position_state_[jnt] = act_position_state_[jnt] ;
+  		}
+  	}
+
+
+  	// propagate state trasmission
+  	act_to_jnt_pos_state.propagate();
+  	act_to_jnt_vel_state.propagate();
+  	index_act_to_jnt_pos_state.propagate();
+  	index_act_to_jnt_vel_state.propagate();
+
+  	// update the sate of the other passive joints (helpfull for visualization tools)
+  	joint_position_state_[joints_ii.j_mrl_2 ] = joint_position_state_[joints_ii.j_mrl_flex ];
+  	joint_velocity_state_[joints_ii.j_mrl_2 ] = joint_velocity_state_[joints_ii.j_mrl_flex ];
+
+  	joint_position_state_[joints_ii.j_mrl_3 ] = joint_position_state_[joints_ii.j_mrl_flex ];
+  	joint_velocity_state_[joints_ii.j_mrl_3 ] = joint_velocity_state_[joints_ii.j_mrl_flex ];
+
+  	joint_position_state_[joints_ii.j_thumb_opp ] = GetThumbOppPosition();
+  	joint_velocity_state_[joints_ii.j_thumb_opp ] = 0;
+
+  return;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //write: Get joint target from ros interfaces, propagate to the actuator space and
+  // Write the actuator target to the hardware.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  void MiaHWInterface::write(const ros::Time& time, const ros::Duration& duration)
+  {
+  	/* Selectively send position or speed command according to
+  	* the external commands sent by the controllers.
+  	*/
+  	if(write_counter == 0)
+   	{
+      InitBkLastCommands();
+	  }
+
+  	// Enforce limits
+  	pj_sat_interface_.enforceLimits(duration);
+  	pj_limits_interface_.enforceLimits(duration);
+ 	  vj_sat_interface_.enforceLimits(duration);
+  	vj_limits_interface_.enforceLimits(duration);
+
+  	for(unsigned int j=0; j < n_actuators_; j++)
+    {
+
+      // Select the control method for the current joint
+  		joint_control_methods_[j] = SelectCtrMethod(last_joint_control_methods_[j],
+  								last_joint_velocity_command_[j],
+  								joint_velocity_command_[j],
+  								last_joint_position_command_[j],
+  								joint_position_command_[j]);
+
+      // update backup
+  		last_joint_position_command_[j] = joint_position_command_ [j];
+  		last_joint_velocity_command_[j] = joint_velocity_command_[j];
+  		last_joint_control_methods_[j] = joint_control_methods_[j]; // save for the next iteration
+
+  		switch (joint_control_methods_[j])
+  		{
+  			case POSITION:
+  			{
+  				// Propagate cmd to actuator space
+  				if(j == joints_ii.j_index_flex)
+  					index_jnt_to_act_pos.propagate();
+
+  				else
+  					jnt_to_act_pos.propagate();
+
+
+  				// send command to Mia
+  				mia_.setMotorPos( j, (int16_t)act_position_command_[j]);
+  			}
+  			break;
+
+  			case VELOCITY:
+  			{
+  				// Propagate cmd to actuator space
+  				if(j == joints_ii.j_index_flex)
+  					index_jnt_to_act_vel.propagate();
+  				else
+  					jnt_to_act_vel.propagate();
+
+  				// send command to Mia
+  				mia_.setMotorSpe( j, (int16_t)act_velocity_command_[j]);
+  			}
+  			break;
+
+  		} // end switch
+  	}// end for joint
+
+  	return;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // InitBkLastCommands: Initialize the arrays saving the last received joint command.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  void  MiaHWInterface::InitBkLastCommands()
+  {
+  	for(unsigned int j=0; j < n_actuators_; j++)
+  	{
+  		// for the first iteration initialize the last command and the last joint position status
+  		last_joint_position_command_[j] = joint_position_command_ [j];
+  		last_joint_velocity_command_[j] = joint_velocity_command_[j];
+  		//last_joint_effort_command_[j]   = joint_effort_command_[j];
+
+  		last_joint_control_methods_[j] =   List_joint_control_methods_[j][0]; // POSITION
+  	}
+  	write_counter++;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RegisterJointLimits:Register the limits of the joint specified by joint_name and joint_handle.
+  // The limits are retrieved from joint_limit_nh. If urdf_model is not NULL, limits are retrieved from it also.
+  // Return the joint's type, lower position limit, upper position limit, and effort limit.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  void MiaHWInterface::registerJointLimits(const std::string& joint_name,
+                              const std::vector<hardware_interface::JointHandle>& joint_handle,
+                              const std::vector<ControlMethod> ctrl_method,
+                              const ros::NodeHandle& joint_limit_nh,
+                              const urdf::Model *const urdf_model,
+                              int *const joint_type, double *const lower_limit,
+                              double *const upper_limit, double *const effort_limit)
+  {
+        // Initialize variables
+  	*joint_type = urdf::Joint::UNKNOWN;
+  	*lower_limit = -std::numeric_limits<double>::max();
+  	*upper_limit = std::numeric_limits<double>::max();
+  	*effort_limit = std::numeric_limits<double>::max();
+
+  	joint_limits_interface::JointLimits limits;
+  	bool has_limits = false;
+  	joint_limits_interface::SoftJointLimits soft_limits;
+  	bool has_soft_limits = false;
+
+     // find limits
+  	if (urdf_model != NULL)
+  	{
+      const urdf::JointConstSharedPtr urdf_joint = urdf_model->getJoint(joint_name);
+
+      if (urdf_joint != NULL)
+      {
+        *joint_type = urdf_joint->type;
+
+        // Get limits from the URDF file.
+        if (joint_limits_interface::getJointLimits(urdf_joint, limits))
+         has_limits = true;
+
+        if (joint_limits_interface::getSoftJointLimits(urdf_joint, soft_limits))
+         has_soft_limits = true;
+      }
+
+  	}
+
+     // Get limits from the parameter server.
+     if (joint_limits_interface::getJointLimits(joint_name, joint_limit_nh, limits))
+       has_limits = true;
+
+     if (!has_limits)
+       return;
+
+     if (limits.has_position_limits)
+     {
+       *lower_limit = limits.min_position;
+       *upper_limit = limits.max_position;
+     }
+     if (limits.has_effort_limits)
+       *effort_limit = limits.max_effort;
+
+     if (has_soft_limits)
+     {
+       for (unsigned int cm = 0; cm< ctrl_method.size(); cm++)
+       {
+         switch (ctrl_method[cm])
+         {
+           case EFFORT:
+             {
+               const joint_limits_interface::EffortJointSoftLimitsHandle
+                                limits_handle(joint_handle[cm], limits, soft_limits);
+               ej_limits_interface_.registerHandle(limits_handle);
+             }
+             break;
+           case POSITION:
+             {
+               const joint_limits_interface::PositionJointSoftLimitsHandle
+                                limits_handle(joint_handle[cm], limits, soft_limits);
+               pj_limits_interface_.registerHandle(limits_handle);
+             }
+             break;
+           case VELOCITY:
+             {
+               const joint_limits_interface::VelocityJointSoftLimitsHandle
+                                limits_handle(joint_handle[cm], limits, soft_limits);
+               vj_limits_interface_.registerHandle(limits_handle);
+             }
+             break;
+         }// end switch
+       } // end for
+     }
+     else
+     {
+  	   for (unsigned int cm = 0; cm< ctrl_method.size(); cm++)
+  	   {
+          switch (ctrl_method[cm])
+          {
+
+          case EFFORT:
+          {
+          	const joint_limits_interface::EffortJointSaturationHandle
+          					sat_handle(joint_handle[cm], limits);
+          	ej_sat_interface_.registerHandle(sat_handle);
+          }
+          break;
+          case POSITION:
+          {
+          	const joint_limits_interface::PositionJointSaturationHandle
+          					sat_handle(joint_handle[cm], limits);
+          	pj_sat_interface_.registerHandle(sat_handle);
+          }
+          break;
+          case VELOCITY:
+          {
+          	const joint_limits_interface::VelocityJointSaturationHandle
+          					sat_handle(joint_handle[cm], limits);
+          	vj_sat_interface_.registerHandle(sat_handle);
+          }
+          break;
+
+          }//endswicth
+  		} // end for
+
+    }//endifelse
+
+  }//end registerlimits function
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //GetThumbOppPosition: Get the target position of the Mia thumb_opp joint based on the position of
+  //the Mia index actual position.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  double MiaHWInterface::GetThumbOppPosition()
+  {
+
+    double j_index_flex_pos = joint_position_state_[joints_ii.j_index_flex ];
+    double jThOpp_Target_position = MyTh_opp_passiveJoint.GetThumbOppPosition(j_index_flex_pos);
+
+    return jThOpp_Target_position;
+  }
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //SelectCtrMethod: Select the method to control a joint.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  enum MiaHWInterface::ControlMethod MiaHWInterface::SelectCtrMethod(
+  							    enum MiaHWInterface::ControlMethod last_joint_control_methods_,
+  							    const double last_joint_velocity_command_,
+  							    const double joint_velocity_command_,
+  							    const double last_joint_position_command_,
+  							    const double joint_position_command_)
+  {
+
+	if( joint_position_command_ != last_joint_position_command_)
+		return POSITION;
+	else if( joint_velocity_command_ != last_joint_velocity_command_)
+		return VELOCITY;
+	else // default
+		return last_joint_control_methods_;
+
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //getURDF: Get the URDF XML from the parameter server.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  std::string MiaHWInterface::getURDF(std::string param_name) const
+  {
+  	std::string urdf_string;
+
+  	// search and wait for robot_description on param server
+  	while (urdf_string.empty())
+  	{
+  	std::string search_param_name;
+
+  	if (nh_.searchParam(param_name, search_param_name))
+  	{
+  	  ROS_INFO_ONCE_NAMED("MiaHWInterface", "MiaHWInterface is waiting for model"
+  		" URDF in parameter [%s] on the ROS param server.", search_param_name.c_str());
+
+  	  nh_.getParam(search_param_name, urdf_string);
+  	}
+  	else
+  	{
+  	  ROS_INFO_ONCE_NAMED("MiaHWInterface", "MiaHWInterface  is waiting for model"
+  		" URDF in parameter [%s] on the ROS param server.", robot_description_.c_str());
+
+  	  nh_.getParam(param_name, urdf_string);
+  	}
+
+  	usleep(100000);
+  	}
+  	ROS_DEBUG_STREAM_NAMED("MiaHWInterface", "Recieved urdf from param server, parsing...");
+
+  	return urdf_string;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //parseTransmissionsFromURDF: Get the transmissions declared into the URDF file.
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  bool MiaHWInterface::parseTransmissionsFromURDF(const std::string& urdf_string)
+  {
+
+  	transmission_interface::TransmissionParser::parse(urdf_string, URDFtransmissions_);
+  	return true;
+  }
+
+}  // namespace
