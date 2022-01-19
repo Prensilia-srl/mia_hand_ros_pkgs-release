@@ -4,7 +4,7 @@ project(mia_hand_driver)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
-find_package(catkin REQUIRED COMPONENTS roscpp mia_hand_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp mia_hand_msgs std_srvs)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBSERIAL REQUIRED libserial)
 
@@ -14,7 +14,7 @@ pkg_check_modules(LIBSERIAL REQUIRED libserial)
 ###################################
 
 catkin_package(
-	CATKIN_DEPENDS roscpp mia_hand_msgs
+	CATKIN_DEPENDS roscpp mia_hand_msgs std_srvs
 	DEPENDS LIBSERIAL
 	INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
@@ -29,7 +29,7 @@ include_directories(include ${LIBSERIAL_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME}
 	src/serial_port.cpp
-	src/cpp_driver.cpp 
+	src/cpp_driver.cpp
   src/ros_driver.cpp
 )
 
@@ -62,7 +62,7 @@ install(
 # Mark libraries for installation
 #
 install(
-  TARGETS ${PROJECT_NAME} 
+  TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
