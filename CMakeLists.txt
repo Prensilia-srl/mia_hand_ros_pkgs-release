@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.6.0)
 project(mia_hand_driver)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -6,7 +6,7 @@ project(mia_hand_driver)
 
 find_package(catkin REQUIRED COMPONENTS roscpp mia_hand_msgs std_srvs)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBSERIAL REQUIRED libserial)
+pkg_check_modules(LIBSERIAL REQUIRED IMPORTED_TARGET libserial)
 
 
 ###################################
@@ -15,7 +15,7 @@ pkg_check_modules(LIBSERIAL REQUIRED libserial)
 
 catkin_package(
 	CATKIN_DEPENDS roscpp mia_hand_msgs std_srvs
-	DEPENDS LIBSERIAL
+  DEPENDS LIBSERIAL
 	INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
 )
@@ -34,7 +34,7 @@ add_library(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  ${LIBSERIAL_LIBRARIES}
+  PkgConfig::LIBSERIAL
   ${catkin_LIBRARIES}
 )
 
