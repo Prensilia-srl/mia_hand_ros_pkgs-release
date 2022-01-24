@@ -113,7 +113,7 @@ void CppDriver::setMotorPos(uint8_t mot_id, int16_t mot_pos)
 
 void CppDriver::setMotorSpe(uint8_t mot_id, int16_t mot_spe)
 { 
-  std::string spe_cmd = "@" + std::to_string(mot_id + 1) + "S+....0080....";
+  std::string spe_cmd = "@" + std::to_string(mot_id + 1) + "S+....0050....";
 
   if (mot_spe < 0)
   {
