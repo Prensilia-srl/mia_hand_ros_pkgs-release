@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- Arguments to set the MIA COM number  -->
+	<arg name="Mia_COM_" default='0' doc="Int number of the Mia hand COM port" />
+	<arg name="Mia_fs_" default='100' doc="Hz, frequency of the control loop of the Mia Hw interface" />
+	<arg name="robotNamespace"         default="mia_hand_hw"/> <!-- /mia_hand -->
+
+	<group ns="$(arg robotNamespace)">
+
+
+
+	<!-- Arguments to set the type of control to use for each finger -->
+  	<arg name="controller_thumb_fle" default="position"
+       	doc="type of controller for thumb flexion. Values: position, velocity"/>
+	<arg name="controller_index_fle" default="position"
+       	doc="type of controller for index flexion. Values: position, velocity"/>
+	<arg name="controller_mrl_fle"   default="position"
+       	doc="type of controller for mrl flexion. Values: position, velocity"/>
+
+
+	<!-- Load urd as robot description -->
+	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find mia_hand_description)/urdf/mia_hand_launch.urdf.xacro' " />
+
+	<!-- convert joint states to TF transforms for rviz, etc -->
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false"/>
+
+	<!-- Load joint controller configurations from YAML file to parameter server -->
+	<rosparam file="$(find mia_hand_ros_control)/config/mia_hand_hw_controllers.yaml" command="load"/>
+
+
+	<!-- Start the control node -->
+	<node name="Mia_hw_node" pkg="mia_hand_ros_control" type="Mia_hw_node" output="screen">
+		<param name="Mia_COM_" type="int" value="$(arg Mia_COM_)"/> <!-- private param so as to match to the namespace used-->
+	 	<param name="Mia_fs_" type="int" value="$(arg Mia_fs_)"/> <!-- private param so as to match to the namespace used-->
+	</node>
+
+	<!-- load and start the controllers -->
+ 	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+   	output="screen"  args="j_thumb_fle_$(arg controller_thumb_fle)_controller
+                                         j_index_fle_$(arg controller_index_fle)_controller
+                                         j_mrl_fle_$(arg controller_mrl_fle)_controller
+                                         joint_state_controller"/>
+
+	</group>
+</launch>
