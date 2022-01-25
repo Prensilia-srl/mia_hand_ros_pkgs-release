@@ -1,0 +1,12 @@
+Source: ros-noetic-mia-hand-bringup
+Section: misc
+Priority: optional
+Maintainer: Andrea Burani <andreabu@prensilia.com>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin
+Homepage: https://wiki.ros.org/mia_hand_ros_pkgs
+Standards-Version: 3.9.2
+
+Package: ros-noetic-mia-hand-bringup
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-mia-hand-description, ros-noetic-mia-hand-driver, ros-noetic-mia-hand-gazebo, ros-noetic-mia-hand-ros-control
+Description: Package for grouping together all Mia Hand config and launch files.
