@@ -2,8 +2,11 @@
 Changelog for package mia_hand_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.0 (2022-01-24)
+1.0.0 (2022-01-25)
 ------------------
+* Changed #include directive for libserial.
+* 1.0.0
+* Updated CHANGELOG files.
 * Limited max motor PWM in speed command.
 * Created libserial IMPORTED_TARGET.
 * Updated CHANGELOG files.
