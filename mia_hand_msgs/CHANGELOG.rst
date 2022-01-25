@@ -2,8 +2,10 @@
 Changelog for package mia_hand_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.0 (2022-01-24)
+1.0.0 (2022-01-25)
 ------------------
+* 1.0.0
+* Updated CHANGELOG files.
 * Updated CHANGELOG files.
 * Added srv dependency to mia_hand_driver and joint_state_interface to mmia_hand_description. Added wiki url links.
 * 1.0.0
