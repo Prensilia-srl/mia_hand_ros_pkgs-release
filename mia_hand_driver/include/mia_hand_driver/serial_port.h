@@ -31,7 +31,7 @@
 #ifndef MIA_HAND_SERIAL_PORT_H
 #define MIA_HAND_SERIAL_PORT_H
 
-#include "libserial/SerialPort.h"
+#include <libserial/SerialPort.h>
 #include <mutex>
 
 namespace mia_hand
