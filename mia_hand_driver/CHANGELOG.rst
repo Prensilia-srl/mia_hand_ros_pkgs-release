@@ -2,6 +2,11 @@
 Changelog for package mia_hand_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.2 (2022-02-07)
+------------------
+* Added Threads package finding in CMake.
+* Contributors: Andrea Burani
+
 1.0.1 (2022-02-07)
 ------------------
 * Forced CMake to find at least version 1.0.0 of libserial.
