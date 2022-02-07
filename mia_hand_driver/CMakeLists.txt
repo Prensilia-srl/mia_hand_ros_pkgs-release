@@ -6,7 +6,7 @@ project(mia_hand_driver)
 
 find_package(catkin REQUIRED COMPONENTS roscpp mia_hand_msgs std_srvs)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBSERIAL REQUIRED IMPORTED_TARGET libserial)
+pkg_check_modules(LIBSERIAL REQUIRED IMPORTED_TARGET libserial>=1.0.0)
 
 
 ###################################
