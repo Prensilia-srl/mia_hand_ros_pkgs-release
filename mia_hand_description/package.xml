@@ -4,7 +4,7 @@
 
   <name>mia_hand_description</name>
 
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 
   <description>
     Package containing Mia Hand URDF model. Includes Gazebo tags that allow

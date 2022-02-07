@@ -64,6 +64,10 @@
 
 		 </include>
 
+		 <!--<param name="move_group/trajectory_execution/allowed_execution_duration_scaling" value="6.0" />
+		 <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false" /> -->
+ 	 	 
+
 		 <!-- RVIZ -->
 		 <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mia_hand_ros_control)/config/rviz_moveit_config.rviz"/>
 
