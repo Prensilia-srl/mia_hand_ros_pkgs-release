@@ -1,0 +1,23 @@
+ros-noetic-mia-hand-ros-pkgs (1.0.1-1buster) buster; urgency=high
+
+
+
+ -- Andrea Burani <andreabu@prensilia.com>  Sun, 06 Feb 2022 23:00:00 -0000
+
+ros-noetic-mia-hand-ros-pkgs (1.0.0-1buster) buster; urgency=high
+
+  * 1.0.0
+  * Updated CHANGELOG files.
+  * Updated CHANGELOG files.
+  * Added srv dependency to mia_hand_driver and joint_state_interface to mmia_hand_description. Added wiki url links.
+  * 1.0.0
+  * Adjusted Cmake file of mia_hand_ros_pkgs metapkg for release.
+  * Added ChangeLog files of each pkg.
+  * Initial commit.
+  * Fix package xml files.
+  * Initial commit.
+  * Contributors: Andrea Burani, frcini
+
+ -- Andrea Burani <andreabu@prensilia.com>  Mon, 24 Jan 2022 23:00:00 -0000
+
+
