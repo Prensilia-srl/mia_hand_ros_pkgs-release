@@ -5,6 +5,8 @@ project(mia_hand_driver)
 # add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS roscpp mia_hand_msgs std_srvs)
+
+find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBSERIAL REQUIRED IMPORTED_TARGET libserial>=1.0.0)
 
@@ -34,6 +36,7 @@ add_library(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
+  Threads::Threads
   PkgConfig::LIBSERIAL
   ${catkin_LIBRARIES}
 )
