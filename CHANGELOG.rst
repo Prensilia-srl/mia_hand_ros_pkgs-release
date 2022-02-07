@@ -2,6 +2,11 @@
 Changelog for package mia_hand_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.1 (2022-02-07)
+------------------
+* Forced CMake to find at least version 1.0.0 of libserial.
+* Contributors: Andrea Burani
+
 1.0.0 (2022-01-25)
 ------------------
 * Changed #include directive for libserial.
