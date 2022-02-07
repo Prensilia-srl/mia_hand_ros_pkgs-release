@@ -1,0 +1,27 @@
+ros-noetic-mia-hand-driver (1.0.1-1focal) focal; urgency=high
+
+  * Forced CMake to find at least version 1.0.0 of libserial.
+  * Contributors: Andrea Burani
+
+ -- Andrea Burani <andreabu@prensilia.com>  Sun, 06 Feb 2022 23:00:00 -0000
+
+ros-noetic-mia-hand-driver (1.0.0-1focal) focal; urgency=high
+
+  * Changed #include directive for libserial.
+  * 1.0.0
+  * Updated CHANGELOG files.
+  * Limited max motor PWM in speed command.
+  * Created libserial IMPORTED_TARGET.
+  * Updated CHANGELOG files.
+  * Added srv dependency to mia_hand_driver and joint_state_interface to mmia_hand_description. Added wiki url links.
+  * Added license text at the beginning of each file.
+  * 1.0.0
+  * Added ChangeLog files of each pkg.
+  * Initial commit.
+  * Fix package xml files.
+  * Initial commit.
+  * Contributors: Andrea Burani, frcini
+
+ -- Andrea Burani <andreabu@prensilia.com>  Mon, 24 Jan 2022 23:00:00 -0000
+
+
