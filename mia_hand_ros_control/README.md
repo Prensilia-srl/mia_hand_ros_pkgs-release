@@ -30,7 +30,7 @@ To do that one of the following pre-tested commands can be used:
           tc_type:                default="vel"          doc="type of trajectory controller to launch. Values: vel, pos"
           robotNamespace          default="mia_hand_hw"  doc="Namespace of the robot"
 
-      NB: to use this command it may be needed to manually install the ros pkg rqt_joint_trajectory_controller.
+      NB: to use this command it may be needed to manually install the ros pkg rqt_joint_trajectory_controller. The gains of the velocity trajectory controllers have been tuned with the Speed Scale = 100%. 
 
   - to launch the control loop (frequency 100Hz) with a traj controller (velocity traj controller as default) and the RVIZ Moveit GUI, attaching the Mia hand at COM 0 (default):
 
